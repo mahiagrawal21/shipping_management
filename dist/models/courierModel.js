@@ -46,6 +46,7 @@ const courierSchema = new mongoose_1.Schema({
     },
     tracker: {
         type: String,
+        required: false
         // type: Object,
         // of: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Department' },
     },

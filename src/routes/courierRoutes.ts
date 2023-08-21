@@ -12,7 +12,7 @@ import {
 const router = express.Router();
 
 // Route to create a new courier
-router.post('/', createCourier);
+router.post('/create', createCourier);
 
 // Route to update courier status by ID
 router.put('/:courierId/status', updateCourierStatus);

@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const courierController_1 = require("../controller/courierController"); // Adjust the path
 const router = express_1.default.Router();
 // Route to create a new courier
-router.post('/', courierController_1.createCourier);
+router.post('/create', courierController_1.createCourier);
 // Route to update courier status by ID
 router.put('/:courierId/status', courierController_1.updateCourierStatus);
 // Route to get courier details by ID

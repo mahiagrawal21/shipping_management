@@ -5,8 +5,8 @@ import { generateRandomTrackerID } from '../utilities/trackerUtils';
 // Define your controller functions
 export const createCourier = async (req: Request, res: Response) => {
   try {
-    const trackerID = '1234'
-    // const trackerID = generateRandomTrackerID(8);
+    //const trackerID = '1234'
+     const trackerID = generateRandomTrackerID(8);
     //const newCourierData: Courier =req.body; // Assuming you send courier data in the request body
     // const newCourier = await CourierModel.create(req.body, trackerID);
     const { senderDetails,receiverDetails,packageName,packageWeight,status} = req.body;
@@ -19,7 +19,10 @@ export const createCourier = async (req: Request, res: Response) => {
       status,
       tracker:trackerID
     })
+    const savedCourier = await newCourier.save();
+    console.log("new courier added");
     res.status(201).json(newCourier);
+   
   } catch (error) {
     res.status(500).json({ error: 'Could not create courier' });
   }
@@ -29,7 +32,7 @@ export const createCourier = async (req: Request, res: Response) => {
 export const updateCourierStatus = async (req: Request, res: Response) => {
   try {
     const courierId = req.params.courierId; // Assuming you pass courierId as a URL parameter
-    const { status } = req.body; // Assuming you send status in the request body
+    const { status } = req.body; 
 
     const updatedCourier = await CourierModel.findByIdAndUpdate(
       courierId,
