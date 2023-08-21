@@ -2,7 +2,7 @@ import mongoose, { Schema, Document } from 'mongoose';
 //import bcrypt from 'bcrypt';
 
 export interface CustomerDocument extends Document {
-  customer_name: string;
+  username: string;
   phone_number: string;
   location: string;
   city: string;
@@ -15,14 +15,14 @@ export interface CustomerDocument extends Document {
 }
 
 const CustomerSchema: Schema<CustomerDocument> = new Schema({
-  customer_name: { type: String, required: true},
-  phone_number: { type: String, required: true },
+  username: { type: String, required: true},
+  phone_number: { type: String, required: false },
   password: {type: String, required: true},
-  location: { type:String, required: true},
-  city: {type:String, required: true },
-  state: {type:String, required:true},
-  pincode: {type:String, required:true},
-  country: {type: String, required:true},
+  location: { type:String, required: false},
+  city: {type:String, required: false },
+  state: {type:String, required:false},
+  pincode: {type:String, required:false},
+  country: {type: String, required:false},
   email: { type: String, required: true, unique: true },
 });
 

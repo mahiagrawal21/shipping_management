@@ -18,13 +18,13 @@ dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
-const authenticateToken = (req, res, next) => {
+const authenticateToken = (req: { headers: { authorization: any; }; user: any; }, res: { sendStatus: (arg0: number) => void; }, next: () => void) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader;
     console.log(authHeader);
     
-    jwt.verify(token, SECRET_KEY, (err, user) => {
+    jwt.verify(token, SECRET_KEY, (err: any, user: any) => {
       if (err) {
         console.log(" --------------");
         

@@ -10,11 +10,11 @@ interface DeliveryAgent extends Document {
 const deliveryAgentSchema: Schema<DeliveryAgent> = new Schema({
   name: {
     type: String,
-    required: true,
+    required: false,
   },
   phoneNumber: {
     type: String,
-    required: true,
+    required: false,
   },
   email: {
     type: String,

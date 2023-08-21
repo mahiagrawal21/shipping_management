@@ -2,15 +2,17 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 import { CustomerModel } from './customer';
 //import { DepartmentModel } from './department'; 
 import { DeliveryAgentModel } from './deliveryAgentModel';
+import { string } from 'joi';
 
 interface Courier extends Document {
   senderDetails: Types.ObjectId;
   receiverDetails: Types.ObjectId;
   packageName: string;
   packageWeight: string;
-  tracker: { [key: string]: Types.ObjectId };
+  // tracker: { [key: string]: Types.ObjectId };
+  tracker: string;
   deliveryAgent?: Types.ObjectId;
-  departmentStatus: { [key: string]: string };
+  //departmentStatus: { [key: string]: string };
   status: string;
   pickupDate?: Date;
   deliveredDate?: Date;
@@ -38,18 +40,20 @@ const courierSchema: Schema<Courier> = new Schema({
     required: true,
   },
   tracker: {
-    type: Object,
-    of: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Department' },
+    type: String,
+    required:false
+    // type: Object,
+    // of: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'Department' },
   },
   deliveryAgent: {
     type: mongoose.Schema.Types.ObjectId,
     required: false,
     ref: 'DeliveryAgent',
   },
-  departmentStatus: {
-    type: Object,
-    required: true,
-  },
+  // departmentStatus: {
+  //   type: Object,
+  //   required: true,
+  // },
   status: {
     type: String,
     required: true,

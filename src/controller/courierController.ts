@@ -1,15 +1,29 @@
 import { Request, Response } from 'express'; // Assuming you're using Express
 import {CourierModel} from '../models/courierModel'; // Adjust the path
+import { generateRandomTrackerID } from '../utilities/trackerUtils';
 
 // Define your controller functions
 export const createCourier = async (req: Request, res: Response) => {
   try {
+    const trackerID = '1234'
+    // const trackerID = generateRandomTrackerID(8);
     //const newCourierData: Courier =req.body; // Assuming you send courier data in the request body
-    const newCourier = await CourierModel.create(req.body);
+    // const newCourier = await CourierModel.create(req.body, trackerID);
+    const { senderDetails,receiverDetails,packageName,packageWeight,status} = req.body;
+    const newCourier = new CourierModel({
+    
+      senderDetails,
+      receiverDetails,
+      packageName,
+      packageWeight,
+      status,
+      tracker:trackerID
+    })
     res.status(201).json(newCourier);
   } catch (error) {
     res.status(500).json({ error: 'Could not create courier' });
   }
+  
 };
 
 export const updateCourierStatus = async (req: Request, res: Response) => {
@@ -106,11 +120,11 @@ export const getCouriersForDepartment = async (req: Request, res: Response) => {
   export const updateCourierDetails = async (req: Request, res: Response) => {
     try {
       const courierId = req.params.courierId;
-      const updatedDetails: Partial<Courier> = req.body;
+      // const updatedDetails: Partial<Courier> = courier.req.body;
   
       const updatedCourier = await CourierModel.findByIdAndUpdate(
         courierId,
-        updatedDetails,
+        //updatedDetails,
         { new: true }
       );
   

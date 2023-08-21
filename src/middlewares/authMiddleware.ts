@@ -7,7 +7,7 @@ dotenv.config();
 const key = process.env.SECRET_KEY;
 
 export class Verify {
-    static async verify_token(token) {
+    static async verify_token(token: string) {
         // const token = req.headers.authorization;
         console.log(token);
         if (token) {
