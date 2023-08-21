@@ -1,0 +1,38 @@
+ //import express from 'express';
+// import { getCustomers, getCustomerById, createCustomer, updateCustomer, deleteCustomer } from '../controller/customerController';
+
+// const router = express.Router();
+
+// router.get('/', getCustomers);
+// router.get('/:id', getCustomerById);
+// router.post('/', createCustomer);
+// router.put('/:id', updateCustomer);
+// router.delete('/:id', deleteCustomer);
+
+// export default router;
+
+import express from 'express';
+//import { authenticateToken } from '../middlewares/generatetoken';
+import { getCustomers, signup, LoginUser, forgotPassword,verifyAndRegisterUser } from '../controller/customerController';
+
+const router = express.Router();
+
+// GET /api/customers
+router.get('/customers', getCustomers);
+
+// POST /api/signup
+router.post('/signup', signup);
+
+// POST /api/login
+router.post('/login', LoginUser.user_login);
+
+// POST /api/forgot-password
+router.post('/forgot-password', forgotPassword.forgot_password);
+
+// POST /api/reset-password
+router.post('/reset-password', forgotPassword.reset_password);
+
+//POST /api/verifyAndRegisterUser
+router.post('/verify-and-register-user',verifyAndRegisterUser)
+
+export default router;
