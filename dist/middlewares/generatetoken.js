@@ -27,11 +27,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateToken = void 0;
+exports.authorizeDeliveryAgentToken = exports.authorizeToken = exports.authenticateToken = void 0;
 // export function createToken(req:Request){
 //  const key = secretkey;
 //  const token = jwt.sign( 
@@ -41,8 +50,9 @@ exports.authenticateToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
+//for customer
 const SECRET_KEY = process.env.SECRET_KEY;
-const authenticateToken = (req, res, next) => {
+const authenticateToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const authHeader = req.headers.authorization;
     if (authHeader) {
         const token = authHeader;
@@ -60,6 +70,54 @@ const authenticateToken = (req, res, next) => {
     else {
         res.sendStatus(401);
     }
-};
+});
 exports.authenticateToken = authenticateToken;
+//for department
+const authorizeToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) {
+        return res.status(401).json({
+            status: 'failure',
+            message: 'Unauthorized',
+            data: {},
+        });
+    }
+    jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY2, (err, departmentInfo) => {
+        if (err) {
+            return res.status(403).json({
+                status: 'failure',
+                message: 'Invalid access token',
+                data: {},
+            });
+        }
+        req.department = departmentInfo;
+        next();
+    });
+});
+exports.authorizeToken = authorizeToken;
+//for delivery agent
+const authorizeDeliveryAgentToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
+    if (token == null) {
+        return res.status(401).json({
+            status: 'failure',
+            message: 'Unauthorized',
+            data: {},
+        });
+    }
+    jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY3, (err, deliveryAgentInfo) => {
+        if (err) {
+            return res.status(403).json({
+                status: 'failure',
+                message: 'Invalid access token',
+                data: {},
+            });
+        }
+        req.deliveryAgent = deliveryAgentInfo;
+        next();
+    });
+});
+exports.authorizeDeliveryAgentToken = authorizeDeliveryAgentToken;
 //# sourceMappingURL=generatetoken.js.map

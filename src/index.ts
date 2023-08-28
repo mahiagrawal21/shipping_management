@@ -7,6 +7,8 @@ import deliveryAgentRoutes from './routes/deliveryAgentRoutes';
 import courierRoutes from './routes/courierRoutes';
 import customerRoutes from './routes/customerRoutes';
 import { connectToDatabase } from "./config/database";
+import kafka from './config/kafkaConfig';
+import orderRoutes from './routes/orderRoutes';
  
 const app = express();
 dotenv.config();
@@ -17,7 +19,7 @@ connectToDatabase();
 app.use('/couriers', courierRoutes);
 app.use('/delivery-agents', deliveryAgentRoutes);
 app.use('/customer',customerRoutes);
-
+app.use('/orders',orderRoutes);
 //start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

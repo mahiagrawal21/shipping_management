@@ -10,6 +10,9 @@ client.on('error', err => console.log('Redis client error', err));
 
 
 export class Redis{
+  static removeTokenFromRedis(email: any) {
+    throw new Error('Method not implemented.');
+  }
     static get_otp: any;
   static save_otp: any;
     static async maintain_session_redis(user,device){

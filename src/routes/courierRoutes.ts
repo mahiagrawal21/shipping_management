@@ -7,11 +7,15 @@ import {
   getCouriersForDepartment,
   getCourierTrackingById,
   updateCourierDetails,
+  requestReturn,
+  requestExchange,
 } from '../controller/courierController'; // Adjust the path
 
 const router = express.Router();
 
 // Route to create a new courier
+
+
 router.post('/create', createCourier);
 
 // Route to update courier status by ID
@@ -32,6 +36,10 @@ router.get('/:courierId/tracking', getCourierTrackingById);
 // Route to update courier details by ID
 router.put('/:courierId', updateCourierDetails);
 
-// Add more routes and controller functions as needed
+// Route to return and exchange routes
+router.post('/return', requestReturn);
+router.post('/exchange', requestExchange);
+
 
 export default router;
+

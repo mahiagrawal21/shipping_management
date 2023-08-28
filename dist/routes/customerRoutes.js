@@ -22,6 +22,8 @@ router.get('/customers', customerController_1.getCustomers);
 router.post('/signup', customerController_1.signup);
 // POST /api/login
 router.post('/login', customerController_1.LoginUser.user_login);
+//POST/api/logout
+router.post('/logout', customerController_1.LoginUser.user_logout);
 // POST /api/forgot-password
 router.post('/forgot-password', customerController_1.forgotPassword.forgot_password);
 // POST /api/reset-password

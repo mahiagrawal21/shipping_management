@@ -16,9 +16,11 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+
+//for customer
 const SECRET_KEY = process.env.SECRET_KEY;
 
-const authenticateToken = (req: { headers: { authorization: any; }; user: any; }, res: { sendStatus: (arg0: number) => void; }, next: () => void) => {
+export const authenticateToken = async (req, res, next) => {  
   const authHeader = req.headers.authorization;
   if (authHeader) {
     const token = authHeader;
@@ -40,4 +42,58 @@ const authenticateToken = (req: { headers: { authorization: any; }; user: any; }
   }
 };
 
-export {authenticateToken};
+
+//for department
+export const authorizeToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (token == null) {
+    return res.status(401).json({
+      status: 'failure',
+      message: 'Unauthorized',
+      data: {},
+    });
+  }
+
+  jwt.verify(token, process.env.SECRET_KEY2, (err, departmentInfo) => {
+    if (err) {
+      return res.status(403).json({
+        status: 'failure',
+        message: 'Invalid access token',
+        data: {},
+      });
+    }
+    req.department = departmentInfo
+    next();
+  });
+}
+
+
+//for delivery agent
+
+export const authorizeDeliveryAgentToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (token == null) {
+    return res.status(401).json({
+      status: 'failure',
+      message: 'Unauthorized',
+      data: {},
+    });
+  }
+  
+  jwt.verify(token, process.env.SECRET_KEY3, (err, deliveryAgentInfo) => {
+    if (err) {
+      return res.status(403).json({
+        status: 'failure',
+        message: 'Invalid access token',
+        data: {},
+      });
+    }
+    req.deliveryAgent = deliveryAgentInfo;
+    next();
+  });
+}
+

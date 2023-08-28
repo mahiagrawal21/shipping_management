@@ -66,7 +66,7 @@ export async function signupDeliveryAgent(req, res) {
   const savedDeliveryAgent = await newDeliveryAgent.save();
 
   const loggedInDeliveryAgent = { _id: savedDeliveryAgent._id };
-  const accessToken = jwt.sign(loggedInDeliveryAgent, process.env.SECRET_KEY);
+  const accessToken = jwt.sign(loggedInDeliveryAgent, process.env.SECRET_KEY3);
   
   const responseData = {
     deliveryAgent: {
@@ -116,7 +116,7 @@ export async function loginDeliveryAgent(req, res) {
     }
 
     const loggedInDeliveryAgent = { _id: deliveryAgent._id }
-    const accessToken = jwt.sign(loggedInDeliveryAgent, process.env.JWT_SECRET)
+    const accessToken = jwt.sign(loggedInDeliveryAgent, process.env.SECRET_KEY3)
 
     if (password === deliveryAgent.password) {
       const delAgent = deliveryAgent.toObject()
@@ -144,6 +144,10 @@ export async function loginDeliveryAgent(req, res) {
 @ access: private
 */
 export async function addEntryDeliveryAgent(req, res) {
+  const { error } = addEntrySchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   try {
     const deliveryAgentId = req.deliveryAgent._id
     const courierId = req.body._id

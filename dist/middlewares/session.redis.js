@@ -17,6 +17,9 @@ const client = (0, redis_1.createClient)();
 client.connect();
 client.on('error', err => console.log('Redis client error', err));
 class Redis {
+    static removeTokenFromRedis(email) {
+        throw new Error('Method not implemented.');
+    }
     static maintain_session_redis(user, device) {
         return __awaiter(this, void 0, void 0, function* () {
             //await client.connect();

@@ -102,6 +102,32 @@ class LoginUser {
             }
         });
     }
+    //CUSTOMER LOGOUT
+    static user_logout(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const user = req.headers.authorization;
+                console.log(user);
+                const userSession = yield session_1.SessionModel.findById({ _id: user.user_id });
+                // const expiredToken = jwt.sign({ exp: 0 }, process.env.SECRET_KEY);
+                console.log(userSession);
+                if (userSession) {
+                    userSession.status = false; // Mark the session as inactive
+                    yield userSession.save();
+                    console.log(userSession.status);
+                    // await SessionModel.deleteOne({ user_id: user._id });
+                    yield session_redis_1.Redis.removeTokenFromRedis(user.email);
+                    res.status(200).json({ message: 'Logged out successfully' });
+                }
+                else {
+                    res.status(404).json({ message: 'Session not found' });
+                }
+            }
+            catch (err) {
+                res.status(500).json({ status: 'Server Error' });
+            }
+        });
+    }
 }
 exports.LoginUser = LoginUser;
 //FORGOT PASSWORD 

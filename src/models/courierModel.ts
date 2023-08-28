@@ -4,6 +4,10 @@ import { CustomerModel } from './customer';
 import { DeliveryAgentModel } from './deliveryAgentModel';
 import { string } from 'joi';
 
+interface ExchangeDetails {
+  newPackageWeight: string;
+}
+
 interface Courier extends Document {
   senderDetails: Types.ObjectId;
   receiverDetails: Types.ObjectId;
@@ -13,11 +17,17 @@ interface Courier extends Document {
   tracker: string;
   deliveryAgent?: Types.ObjectId;
   //departmentStatus: { [key: string]: string };
-  status: string;
+  status: 'pending' | 'shipped' | 'delivered';
+  quantity?: number;
   pickupDate?: Date;
   deliveredDate?: Date;
   updatedAt: Date;
   createdAt: Date;
+  returnStatus: string, // New: 'Delivered', 'Returned', 'Exchanged', etc.
+  returnReason: string, // Reason for return
+  exchangeDetails: ExchangeDetails;
+   
+
 }
 
 const courierSchema: Schema<Courier> = new Schema({
@@ -56,7 +66,12 @@ const courierSchema: Schema<Courier> = new Schema({
   // },
   status: {
     type: String,
+    enum: ['pending','shipped','delivered'],
     required: true,
+  },
+  quantity :{
+      type:Number,
+      required: false,
   },
   pickupDate: {
     type: Date,
@@ -64,6 +79,18 @@ const courierSchema: Schema<Courier> = new Schema({
   },
   deliveredDate: {
     type: Date,
+    required: false,
+  },
+  returnStatus: {
+    type: String,
+    required: false,
+  },
+  returnReason: {
+    type: String,
+    required: false,
+  },
+  exchangeDetails: {
+    type: Object, // Or specify the ExchangeDetails interface here
     required: false,
   },
   updatedAt: {

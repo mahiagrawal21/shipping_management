@@ -1,6 +1,8 @@
 import { Request, Response } from 'express'; // Assuming you're using Express
-import {CourierModel} from '../models/courierModel'; // Adjust the path
+ import {CourierModel} from '../models/courierModel'; // Adjust the path
+
 import { generateRandomTrackerID } from '../utilities/trackerUtils';
+import { CustomerModel } from '../models/customer';
 
 // Define your controller functions
 export const createCourier = async (req: Request, res: Response) => {
@@ -141,3 +143,40 @@ export const getCouriersForDepartment = async (req: Request, res: Response) => {
     }
   };
   
+
+  
+
+export const  requestReturn = async (req: Request, res: Response) => {
+  try {
+    const { courierId, returnReason } = req.body;
+console.log(courierId)
+    const updatedCourier = await CourierModel.findByIdAndUpdate(
+      courierId,
+      { status: 'Returned', returnReason },
+      { new: true }
+    );
+  
+    res.json(updatedCourier);
+  } catch (error) {
+    res.status(500).json({ error: 'Could not request return' });
+  }
+};
+
+export const requestExchange = async (req: Request, res: Response) => {
+  try {
+    const { courierId, exchangeDetails } = req.body;
+
+    const updatedCourier = await CourierModel.findByIdAndUpdate(
+      courierId,
+      { status: 'Exchanged', exchangeDetails },
+      { new: true }
+    );
+
+    res.json(updatedCourier);
+  } catch (error) {
+    res.status(500).json({ error: 'Could not request exchange' });
+  }
+};
+
+
+

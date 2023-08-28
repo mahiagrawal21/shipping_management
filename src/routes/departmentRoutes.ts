@@ -1,37 +1,37 @@
 
-const express = require('express')
-const route = express.Router()
-const DepartmentController = require('../controllers/departmentController')
-const CourierController = require('../controllers/courierController')
-const DeliveryAgentController = require('../controllers/deliveryAgentController')
+import express from 'express';
 
-const {
-    authorize,
-    authorizeDeliveryAgent,
-  } = require('../middleware/authorizationMiddleware')
-  
+import {
+  addDepartment,
+  loginDepartment,
+  getDepartmentProfile,
+  updateDepartmentProfile,
+} from '../controller/departmentController';
+// Adjust the path
 
-route.get('/', (req, res) => {
-    res.send('/api working')
-  })
-  
+import  {authorizeToken } from '../middlewares/generatetoken';
+
+
+const router = express.Router();
+
 
 
 //------------------ DEPARTMENT APIS -------------------------------//
-route.post('/departments/addDepartment', DepartmentController.addDepartment)
-route.post('/departments/loginDepartment', DepartmentController.loginDepartment)
-route.get(
+router.post('/departments/addDepartment', addDepartment);
+router.post('/departments/loginDepartment', loginDepartment);
+router.get(
   '/departments/getDepartmentInfo',
-  authorize,
-  DepartmentController.getDepartmentProfile
-)
-route.patch(
+  authorizeToken,
+  getDepartmentProfile
+);
+router.patch(
   '/departments/updateDepartmentInfo',
-  authorize,
-  DepartmentController.updateDepartmentProfile
-)
+  authorizeToken,
+  updateDepartmentProfile
+);
 
 
+export default router;
 
 
 

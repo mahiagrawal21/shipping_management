@@ -64,7 +64,7 @@ function signupDeliveryAgent(req, res) {
             });
             const savedDeliveryAgent = yield newDeliveryAgent.save();
             const loggedInDeliveryAgent = { _id: savedDeliveryAgent._id };
-            const accessToken = jsonwebtoken_1.default.sign(loggedInDeliveryAgent, process.env.SECRET_KEY);
+            const accessToken = jsonwebtoken_1.default.sign(loggedInDeliveryAgent, process.env.SECRET_KEY3);
             const responseData = {
                 deliveryAgent: {
                     _id: savedDeliveryAgent._id,
@@ -110,7 +110,7 @@ function loginDeliveryAgent(req, res) {
                 });
             }
             const loggedInDeliveryAgent = { _id: deliveryAgent._id };
-            const accessToken = jsonwebtoken_1.default.sign(loggedInDeliveryAgent, process.env.JWT_SECRET);
+            const accessToken = jsonwebtoken_1.default.sign(loggedInDeliveryAgent, process.env.SECRET_KEY3);
             if (password === deliveryAgent.password) {
                 const delAgent = deliveryAgent.toObject();
                 delete delAgent.password;
@@ -230,4 +230,47 @@ function markDeliveredByDeliveryAgent(req, res) {
     });
 }
 exports.markDeliveredByDeliveryAgent = markDeliveredByDeliveryAgent;
+// @ method: post
+// @ desc: add courier entry through courier _id
+// @ access: private
+// */
+// async function addEntryDeliveryAgent(req, res) {
+//   try {
+//     const deliveryAgentId = req.deliveryAgent._id
+//     const courierId = req.body._id
+//     const courier = await Courier.findById(courierId)
+//     if (!courier) {
+//       return res.status(404).json({
+//         status: 'failure',
+//         message: 'Courier not found',
+//         data: {},
+//       })
+//     }
+//     if (deliveryAgentId == courier.deliveryAgent) {
+//       return res.status(400).json({
+//         status: 'failure',
+//         message: 'Courier already entered',
+//         data: {},
+//       })
+//     }
+//     if (courier.deliveryAgent && deliveryAgentId != courier.deliveryAgent) {
+//       return res.status(400).json({
+//         status: 'failure',
+//         message: 'Courier already assigned to different delivery agent',
+//         data: {},
+//       })
+//     }
+//     await Courier.findByIdAndUpdate(courierId, {
+//       deliveryAgent: deliveryAgentId,
+//       pickupDate: new Date(),
+//     })
+//     return res.status(200).json({
+//       status: 'success',
+//       message: 'Courier added for delivery',
+//       data: {},
+//     })
+//   } catch (error) {
+//     return res.status(500).json({ message: 'Something went wrong !' })
+//   }
+// }
 //# sourceMappingURL=deliveryAgentController.js.map

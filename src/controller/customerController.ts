@@ -100,8 +100,35 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
             res.status(500).json({status: "Server Error"});
         }
     }
-}
+
+
+//CUSTOMER LOGOUT
+  static async user_logout(req, res) {
+      try{
+        const user = req.headers.authorization
+        
+         console.log(user);
+        const userSession = await SessionModel.findById({_id: user.user_id });
+        // const expiredToken = jwt.sign({ exp: 0 }, process.env.SECRET_KEY);
+      console.log(userSession);
+      if (userSession) {
+        userSession.status = false; // Mark the session as inactive
+        await userSession.save();
+        console.log(userSession.status);
+        // await SessionModel.deleteOne({ user_id: user._id });
+        await Redis.removeTokenFromRedis(user.email);
+        res.status(200).json({ message: 'Logged out successfully' });
+      }else {
+        res.status(404).json({ message: 'Session not found' });
+      }
+    } catch (err) {
+      res.status(500).json({ status: 'Server Error' });
+    }
+  }
   
+  }
+
+
 
 //FORGOT PASSWORD 
 export class forgotPassword {

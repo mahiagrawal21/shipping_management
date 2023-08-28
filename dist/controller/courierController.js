@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCourierDetails = exports.getCourierTrackingById = exports.getCouriersForDepartment = exports.updatePickupAndDeliveryDates = exports.getCourierById = exports.updateCourierStatus = exports.createCourier = void 0;
+exports.requestExchange = exports.requestReturn = exports.updateCourierDetails = exports.getCourierTrackingById = exports.getCouriersForDepartment = exports.updatePickupAndDeliveryDates = exports.getCourierById = exports.updateCourierStatus = exports.createCourier = void 0;
 const courierModel_1 = require("../models/courierModel"); // Adjust the path
 const trackerUtils_1 = require("../utilities/trackerUtils");
 // Define your controller functions
@@ -129,4 +129,27 @@ const updateCourierDetails = (req, res) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.updateCourierDetails = updateCourierDetails;
+const requestReturn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { courierId, returnReason } = req.body;
+        console.log(courierId);
+        const updatedCourier = yield courierModel_1.CourierModel.findByIdAndUpdate(courierId, { status: 'Returned', returnReason }, { new: true });
+        res.json(updatedCourier);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Could not request return' });
+    }
+});
+exports.requestReturn = requestReturn;
+const requestExchange = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { courierId, exchangeDetails } = req.body;
+        const updatedCourier = yield courierModel_1.CourierModel.findByIdAndUpdate(courierId, { status: 'Exchanged', exchangeDetails }, { new: true });
+        res.json(updatedCourier);
+    }
+    catch (error) {
+        res.status(500).json({ error: 'Could not request exchange' });
+    }
+});
+exports.requestExchange = requestExchange;
 //# sourceMappingURL=courierController.js.map

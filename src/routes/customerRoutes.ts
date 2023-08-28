@@ -26,6 +26,9 @@ router.post('/signup', signup);
 // POST /api/login
 router.post('/login', LoginUser.user_login);
 
+//POST/api/logout
+router.post('/logout', LoginUser.user_logout);
+
 // POST /api/forgot-password
 router.post('/forgot-password', forgotPassword.forgot_password);
 

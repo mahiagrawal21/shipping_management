@@ -33,6 +33,7 @@ const deliveryAgentRoutes_1 = __importDefault(require("./routes/deliveryAgentRou
 const courierRoutes_1 = __importDefault(require("./routes/courierRoutes"));
 const customerRoutes_1 = __importDefault(require("./routes/customerRoutes"));
 const database_1 = require("./config/database");
+const orderRoutes_1 = __importDefault(require("./routes/orderRoutes"));
 const app = (0, express_1.default)();
 dotenv.config();
 const port = 3000;
@@ -41,6 +42,7 @@ app.use(express_1.default.json());
 app.use('/couriers', courierRoutes_1.default);
 app.use('/delivery-agents', deliveryAgentRoutes_1.default);
 app.use('/customer', customerRoutes_1.default);
+app.use('/orders', orderRoutes_1.default);
 //start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

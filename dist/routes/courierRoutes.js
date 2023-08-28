@@ -20,6 +20,8 @@ router.get('/department/:departmentId', courierController_1.getCouriersForDepart
 router.get('/:courierId/tracking', courierController_1.getCourierTrackingById);
 // Route to update courier details by ID
 router.put('/:courierId', courierController_1.updateCourierDetails);
-// Add more routes and controller functions as needed
+// Route to return and exchange routes
+router.post('/return', courierController_1.requestReturn);
+router.post('/exchange', courierController_1.requestExchange);
 exports.default = router;
 //# sourceMappingURL=courierRoutes.js.map

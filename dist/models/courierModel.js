@@ -61,7 +61,12 @@ const courierSchema = new mongoose_1.Schema({
     // },
     status: {
         type: String,
+        enum: ['pending', 'shipped', 'delivered'],
         required: true,
+    },
+    quantity: {
+        type: Number,
+        required: false,
     },
     pickupDate: {
         type: Date,
@@ -69,6 +74,18 @@ const courierSchema = new mongoose_1.Schema({
     },
     deliveredDate: {
         type: Date,
+        required: false,
+    },
+    returnStatus: {
+        type: String,
+        required: false,
+    },
+    returnReason: {
+        type: String,
+        required: false,
+    },
+    exchangeDetails: {
+        type: Object,
         required: false,
     },
     updatedAt: {
