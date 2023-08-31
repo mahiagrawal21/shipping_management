@@ -16,7 +16,7 @@ interface Courier extends Document {
   // tracker: { [key: string]: Types.ObjectId };
   tracker: string;
   deliveryAgent?: Types.ObjectId;
-  //departmentStatus: { [key: string]: string };
+  departmentStatus: { [key: string]: string };
   status: 'pending' | 'shipped' | 'delivered';
   quantity?: number;
   pickupDate?: Date;
@@ -60,10 +60,10 @@ const courierSchema: Schema<Courier> = new Schema({
     required: false,
     ref: 'DeliveryAgent',
   },
-  // departmentStatus: {
-  //   type: Object,
-  //   required: true,
-  // },
+  departmentStatus: {
+    type: Object, //{depId:status}
+    required: true, //accepted, out of delivery, dispatched, unsuccessful, delivered
+  },
   status: {
     type: String,
     enum: ['pending','shipped','delivered'],

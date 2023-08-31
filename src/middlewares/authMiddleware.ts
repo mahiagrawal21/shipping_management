@@ -1,6 +1,8 @@
 import Joi from 'joi';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
+import { AdminModel } from '../models/adminModel';
+import { NextFunction } from 'express';
 dotenv.config();
 
 
@@ -25,6 +27,9 @@ export class Verify {
     });
 
 }
+
+
+  
 
 
 

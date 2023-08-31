@@ -14,7 +14,7 @@ export interface CustomerDocument extends Document {
   //comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const CustomerSchema: Schema<CustomerDocument> = new Schema({
+export const CustomerSchema: Schema<CustomerDocument> = new Schema({
   username: { type: String, required: true},
   phone_number: { type: String, required: false },
   password: {type: String, required: true},

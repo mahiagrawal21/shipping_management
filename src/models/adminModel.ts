@@ -12,7 +12,7 @@ interface Admin extends Document {
 const adminSchema: Schema<Admin> = new Schema({
   username: { 
     type: String,
-    required: true 
+    required: false, 
     },
   email: { 
     type: String,

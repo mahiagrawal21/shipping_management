@@ -87,8 +87,7 @@ export const handleOrderEvent = async (orderEvent: any) => {
       console.log(`Courier ${courierId} status updated to ${newStatus}`);
     }
 
-    // You can add more conditions and logic here based on different event types
-    // For example, you might update delivery agent information, tracking status, etc.
+   
 
   } catch (error) {
     console.error('Error handling order event:', error);

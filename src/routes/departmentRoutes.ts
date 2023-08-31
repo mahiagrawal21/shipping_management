@@ -7,7 +7,7 @@ import {
   getDepartmentProfile,
   updateDepartmentProfile,
 } from '../controller/departmentController';
-// Adjust the path
+
 
 import  {authorizeToken } from '../middlewares/generatetoken';
 
@@ -17,15 +17,15 @@ const router = express.Router();
 
 
 //------------------ DEPARTMENT APIS -------------------------------//
-router.post('/departments/addDepartment', addDepartment);
-router.post('/departments/loginDepartment', loginDepartment);
+router.post('/addDepartment', addDepartment);
+router.post('/loginDepartment', loginDepartment);
 router.get(
-  '/departments/getDepartmentInfo',
+  '/getDepartmentInfo',
   authorizeToken,
   getDepartmentProfile
 );
 router.patch(
-  '/departments/updateDepartmentInfo',
+  '/updateDepartmentInfo',
   authorizeToken,
   updateDepartmentProfile
 );

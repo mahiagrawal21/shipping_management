@@ -64,7 +64,7 @@ export const signup = async (req: Request, res: Response, next: NextFunction) =>
   //CUSTOMER LOGIN:-
 
   export class LoginUser{
-    static async user_login(req,res){
+    static async user_login(req: Request,res: Response){
         const details = req.body;
         try{
           const device =req.headers.device;
@@ -250,105 +250,4 @@ export class forgotPassword {
     res.status(500).json({ error: 'An error occurred' });
   }
  };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// export const verifyAndRegisterUser = async (ctx: Context) => {
-  
-//   const redisClient = createClient();
-//   redisClient.on('error', (err) => console.error('Redis Error:', err));
-//   await redisClient.connect();
-//     try {
-//       const { email, otp, password,name } = ctx.request.body as {
-//         email: string;
-//         otp: string;
-//         password: string;
-//         name:string
-//       };
-  
-//       const storedOTP = await redisClient.get(email);
-//       if (!storedOTP || storedOTP !== otp) {
-//         ctx.status = 400;
-//         ctx.body = { error: 'invalid OTP' };
-//         return;
-//       }
-//       const hashedPassword = await bcrypt.hash(password, 10);
-//       const newUser = new User({
-//         email,
-//         password: hashedPassword,
-//         name,
-//       });
-  
-//       await newUser.save();
-//       await redisClient.del(email);
-  
-//       ctx.status = 201;
-//       ctx.body = { message: 'user registered successfully.' };
-//     } catch (error) {
-//       console.error('error occurred:', error);
-//       ctx.status = 500;
-//       ctx.body = { error: 'An error occurred' };
-//     }
-//   };
-  
-  
-
-  
-
-
-
-  // export const loginuser = async (req: Request, res: Response, next: NextFunction) => {
-  //  try {
-  //  const { username, password } = req.body;
-  //  const user_1 = await CustomerModel.findOne({ username: username });
-  
-  //  if (!user_1) {
-  //  return res.status(404).json({ error: "User not found" });
-  //  }
-  
-  //  const passwordMatch = await compare(password, user_1.password.toString());
-  
-  //  if (!passwordMatch) {
-  //  throw new Error("email password not matched");
-  //  }
-  
-  //  const session1 = new SessionModel({
-  //  user_id: user_1._id,
-  //  status: "Active",
-  //  expire_at: "1000"
-  //  });
-  
-  //  await session1.save(); 
-  // await client.set(${user_1._id}_session, JSON.stringify(user_1));
-  
-  //  const token = createToken(req);
-  // // res.send({token:token})
-  //  res.status(200).json({ message: 'Login successful' });
-  //  } catch (error) {
-  //  console.error("Login Error:", error);
-  //  res.status(500).json({ error: "An error occurred during login" });
-  //  }
-  // }; 
+ 

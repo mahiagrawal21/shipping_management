@@ -134,7 +134,8 @@ export const loginDepartment = async (req: Request, res: Response) => {
 //get-profile of courier agency
 export const getDepartmentProfile = async (req: AuthenticatedDepartmentRequest, res: Response) => {
   try {
-    const departmentId = req.department._id;
+     const departmentId = req.department._id;
+    // console.log(departmentId);
     const department = await DepartmentModel.findById(departmentId).select(
       '-password'
     );
