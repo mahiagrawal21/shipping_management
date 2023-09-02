@@ -1,0 +1,41 @@
+
+import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import * as dotenv from 'dotenv';
+//import customerRoutes from './routes/customerRoutes';
+import deliveryAgentRoutes from './routes/deliveryAgentRoutes';
+import courierRoutes from './routes/courierRoutes';
+import customerRoutes from './routes/customerRoutes';
+import { connectToDatabase } from "./config/database";
+import kafka from './config/kafkaConfig';
+import orderRoutes from './routes/orderRoutes';
+import departmentRoutes from './routes/departmentRoutes';
+import adminRoutes from './routes/adminRoutes';
+import viewrouter from './routes/view.routes';
+import path from "path"
+import bodyParser from 'body-parser';
+ 
+const app = express();
+dotenv.config();
+const port = 3000;
+app.use(express.json());
+connectToDatabase();
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.use('/couriers', courierRoutes);
+app.use('/delivery-agents', deliveryAgentRoutes);
+app.use('/customer',customerRoutes);
+app.use('/department',departmentRoutes);
+app.use('/orders',orderRoutes);
+app.use('/admin',adminRoutes);
+app.use('/', viewrouter);
+
+app.use('/', express.static(path.join(__dirname, '..', 'views'), {  index: false,}));
+
+
+
+//start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
