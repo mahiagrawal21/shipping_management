@@ -5,7 +5,7 @@ import {
   getCourierById,
   updatePickupAndDeliveryDates,
   getCouriersForDepartment,
-  getCourierTrackingById,
+  
   updateCourierDetails,
   requestReturn,
   requestExchange,
@@ -30,8 +30,7 @@ router.put('/:courierId/dates', updatePickupAndDeliveryDates);
 // Route to get all couriers for a department
 router.get('/department/:departmentId', getCouriersForDepartment);
 
-// Route to get courier tracking by ID
-router.get('/:courierId/tracking', getCourierTrackingById);
+
 
 // Route to update courier details by ID
 router.put('/:courierId', updateCourierDetails);
