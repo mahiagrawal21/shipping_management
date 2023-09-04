@@ -5,7 +5,7 @@ import {
   markDeliveredByDeliveryAgent,
   signupDeliveryAgent,
   deleteDeliveryAgent
-} from '../controller/deliveryAgentController'; // Adjust the path
+} from '../controller/deliveryAgentController'; 
 import { validateJoiSchema } from '../middlewares/joivalidation';
 import Joi from 'joi';
 

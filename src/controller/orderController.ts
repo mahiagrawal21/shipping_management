@@ -88,18 +88,6 @@ export const updateShipmentStatus = async (req: Request, res: Response) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 //CONSUMER-
 export const startOrderEventsConsumer = async (req: Request, res: Response) => {
   try {

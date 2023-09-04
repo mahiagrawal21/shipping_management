@@ -1,4 +1,4 @@
-//Mongoose model for a collection --> Session
+
 
 import { boolean } from 'joi';
 import { Schema, model } from 'mongoose';

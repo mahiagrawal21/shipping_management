@@ -1,11 +1,20 @@
 // adminModel.ts
 import mongoose, { Schema, Document } from 'mongoose';
 
+// export interface TrackingUpdate {
+//   save(): unknown;
+//   timestamp: Date;
+//   location: string;
+//   status: string;
+// }
+
+
 interface Admin extends Document {
   username: string;
   email: string;
   password: string;
   phoneNumber: string;
+  // trackingHistory?: TrackingUpdate[];
   
 }
 
@@ -27,6 +36,22 @@ const adminSchema: Schema<Admin> = new Schema({
     type: String,
     required: false,
   },
+  // trackingHistory: [
+  //   {
+  //     timestamp: {
+  //       type: Date,
+  //       // required: true,
+  //     },
+  //     location: {
+  //       type: String,
+  //       // required: true,
+  //     },
+  //     status: {
+  //       type: String,
+  //       // required: true,
+  //     },
+  //   },
+  // ],
   
 });
 

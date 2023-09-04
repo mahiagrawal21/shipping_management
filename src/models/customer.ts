@@ -27,31 +27,5 @@ export const CustomerSchema: Schema<CustomerDocument> = new Schema({
   email: { type: String, required: true, unique: true },
   reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
 
-});
-
-// // Hash the password before saving the user
-// UserSchema.pre<UserDocument>('save', async function (next) {
-//   if (!this.isModified('password')) {
-//     return next();
-//   }
-
-//   try {
-//     const salt = await bcrypt.genSalt(10);
-//     const hashedPassword = await bcrypt.hash(this.password, salt);
-//     this.password = hashedPassword;
-//     next();
-//   } catch (error) {
-//     return next(error);
-//   }
-// });
-
-// // Compare the provided password with the stored hashed password
-// UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-//   try {
-//     return await bcrypt.compare(candidatePassword, this.password);
-//   } catch (error) {
-//     throw error;
-//   }
-// };
-
+})
 export const CustomerModel =  mongoose.model<CustomerDocument>('Customer', CustomerSchema);

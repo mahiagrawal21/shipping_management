@@ -9,11 +9,11 @@ import {
   updateCourierDetails,
   requestReturn,
   requestExchange,
-} from '../controller/courierController'; // Adjust the path
+} from '../controller/courierController'; 
 
 const router = express.Router();
 
-// Route to create a new courier
+
 
 
 router.post('/create', createCourier);

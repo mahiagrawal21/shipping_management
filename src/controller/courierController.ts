@@ -20,17 +20,18 @@ export const createCourier = async (req: Request, res: Response) => {
      const trackerID = generateRandomTrackerID(8);
     //const newCourierData: Courier =req.body; // Assuming you send courier data in the request body
     // const newCourier = await CourierModel.create(req.body, trackerID);
-    const { senderDetails,receiverDetails,packageName,packageWeight,status} = req.body;
+    const { senderDetails,receiverDetails,departmentStatus,packageName,packageWeight,status} = req.body;
     const newCourier = new CourierModel({
-    
+      
       senderDetails,
       receiverDetails,
+      departmentStatus,
       packageName,
       packageWeight,
       status,
       tracker:trackerID
     })
-    const savedCourier = await newCourier.save();
+     const savedCourier = await newCourier.save();
     console.log("new courier added");
     res.status(201).json(newCourier);
    
@@ -299,21 +300,21 @@ export const getCouriersForDepartment = async (req: Request, res: Response) => {
 
   
   // Get courier tracking by ID
-  export const getCourierTrackingById = async (req: Request, res: Response) => {
-    try {
-      const courierId = req.params.courierId;
-      const courier = await CourierModel.findById(courierId);
+  // export const getCourierTrackingById = async (req: Request, res: Response) => {
+  //   try {
+  //     const courierId = req.params.courierId;
+  //     const courier = await CourierModel.findById(courierId);
   
-      if (!courier) {
-        return res.status(404).json({ error: 'Courier not found' });
-      }
+  //     if (!courier) {
+  //       return res.status(404).json({ error: 'Courier not found' });
+  //     }
   
-      const { tracker } = courier;
-      res.json(tracker);
-    } catch (error) {
-      res.status(500).json({ error: 'Could not fetch courier tracking by ID' });
-    }
-  };
+  //     const { tracker } = courier;
+  //     res.json(tracker);
+  //   } catch (error) {
+  //     res.status(500).json({ error: 'Could not fetch courier tracking by ID' });
+  //   }
+  // };
   
   // Update courier details
   export const updateCourierDetails = async (req: Request, res: Response) => {
@@ -349,7 +350,7 @@ console.log(courierId)
       { status: 'Returned', returnReason },
       { new: true }
     );
-  
+    await updatedCourier.save();
     res.json(updatedCourier);
   } catch (error) {
     res.status(500).json({ error: 'Could not request return' });
@@ -365,7 +366,7 @@ export const requestExchange = async (req: Request, res: Response) => {
       { status: 'Exchanged', exchangeDetails },
       { new: true }
     );
-
+    await updatedCourier.save();
     res.json(updatedCourier);
   } catch (error) {
     res.status(500).json({ error: 'Could not request exchange' });

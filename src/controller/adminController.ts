@@ -9,8 +9,9 @@ import { createClient  } from 'redis';
 import { Verify } from "../middlewares/authMiddleware";
 import { SessionModel } from '../models/session';
 import { Sessions } from "./sessionController";
-
-
+import { CourierModel } from '../models/courierModel';
+import { TrackingUpdate } from '../models/courierModel';
+import { ObjectId } from 'mongoose';
 
 
 
@@ -127,65 +128,40 @@ static async logoutAdmin(req: Request, res: Response) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// static async logoutAdmin(req: Request, res: Response) {
-//   try {
-//     //const { token }  = req.headers; // Assuming you send the token in the headers
-//     const token = req.headers.authorization as string;
-//     console.log("----",token)
-//     if (!token) {
-//       return res.status(401).json({ error: 'Unauthorized' });
-//     }
+export const trackOrder = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    // const oid = orderId as ObjectId
+    // Find the order by orderId
+    const order = await CourierModel.findById( orderId );
+    console.log(order);
+    if (!order) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
     
+    const newTrackingUpdate: TrackingUpdate = {
+      timestamp: new Date(),
+      location: 'New Location',
+      status: 'In Transit',
+      save: function (): unknown {
+        throw new Error('Function not implemented.');
+      }
+    };
+    console.log("reached above push")
+    order.trackingHistory.push(newTrackingUpdate);
 
-//     const decodedToken = jwt.verify(token, process.env.SECRET_KEY4)as {
-//       admin: any; email: string; 
-// };
-//     console.log("##",decodedToken);
-//     const adminId = decodedToken. admin._id
-//   console.log("@@",adminId)
-//     const adminSession = await SessionModel.findOne({ admin_id: adminId});
+    console.log("reached below push")
+    
+    await order.save();
+    // const trackingHistory = order.trackingHistory;
 
-//     if (adminSession) {
-//       adminSession.status = false; // Mark the session as inactive
-//       await adminSession.save();
+    return res.status(200).json({ message: 'Order tracking information', data: order });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
-//       // Remove the token from Redis
-//       const redisKey = `admin:${adminId}`;
-//       const deleted = await client.del(redisKey);
-      
-//       if (deleted === 1) {
-//         res.status(200).json({ message: 'Logged out successfully' });
-//       } else {
-//         res.status(500).json({ error: 'Could not remove session from Redis' });
-//       }
-//     } else {
-//       res.status(404).json({ message: 'Session not found' });
-//     }
-//   } catch (error) {
-//     res.status(500).json({ error: 'Server Error' });
-//   }
-// }
+
 
 

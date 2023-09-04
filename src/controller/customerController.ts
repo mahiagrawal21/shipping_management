@@ -229,17 +229,14 @@ export class forgotPassword {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Replace this with your User creation logic
+    // Replace this with  User creation logic
     const newUser = {
       email,
       password: hashedPassword,
       username,
     };
 
-    // Replace this with your User saving logic
-    // await newUser.save();
-
-    // Delete OTP from Redis
+    
 
     await client.del(email);
    
@@ -250,4 +247,5 @@ export class forgotPassword {
     res.status(500).json({ error: 'An error occurred' });
   }
  };
+ 
  

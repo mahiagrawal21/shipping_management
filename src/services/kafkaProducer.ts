@@ -2,11 +2,11 @@ import { Kafka, Partitioners, Producer, ProducerRecord } from 'kafkajs';
 
 const kafka = new Kafka({
   clientId: 'courier-management-producer',
-  brokers: ['localhost:9092'], // Replace with your broker addresses
+  brokers: ['localhost:9092'], 
 });
 
-const producer = kafka.producer({
-    createPartitioner: Partitioners.LegacyPartitioner, // Add this option
+export const producer = kafka.producer({
+    createPartitioner: Partitioners.LegacyPartitioner, 
   });
   
 
@@ -17,7 +17,7 @@ export async function sendOrderShippedEvent(orderId: string) {
 
     const orderEvent = {
       order_id: orderId,
-      tracking_id: `TR${orderId}`, // Generate a tracking ID here
+      tracking_id: `TR${orderId}`, 
       status: 'shipped',
    };
 
@@ -34,7 +34,7 @@ export async function sendOrderShippedEvent(orderId: string) {
 
  }catch (error) {
     console.error('Error sending order shipped event:', error);
-    throw error; // Rethrow the error for error handling in the controller
+    throw error; 
   }
 }
 

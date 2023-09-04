@@ -7,9 +7,16 @@ import { string } from 'joi';
 interface ExchangeDetails {
   newPackageWeight: string;
 }
+export interface TrackingUpdate {
+  save(): unknown;
+  timestamp: Date;
+  location: string;
+  status: string;
+}
+
 
 interface Courier extends Document {
-  orderId:Types.ObjectId;
+  // orderId:Types.ObjectId;
   senderDetails: Types.ObjectId;
   receiverDetails: Types.ObjectId;
   packageName: string;
@@ -17,26 +24,29 @@ interface Courier extends Document {
   // tracker: { [key: string]: Types.ObjectId };
   tracker: string;
   deliveryAgent?: Types.ObjectId;
-  departmentStatus: { [key: string]: string };
-  status: 'pending' | 'shipped' | 'delivered';
-  location: string;
+  departmentStatus?: 'accepted'|'out of delivery'|'dispatched'|'unsuccessful'|'delivered'
+  // departmentStatus?: { [key: string]: string };
+  status?: 'pending' | 'shipped' | 'delivered';
+  location?: string;
+  trackingHistory?: TrackingUpdate[];
   quantity?: number;
   pickupDate?: Date;
   deliveredDate?: Date;
   updatedAt: Date;
   createdAt: Date;
-  returnStatus: string, // New: 'Delivered', 'Returned', 'Exchanged', etc.
-  returnReason: string, // Reason for return
-  exchangeDetails: ExchangeDetails;
+  
+  returnStatus?: string, // New: 'Delivered', 'Returned', 'Exchanged', etc.
+  returnReason?: string, // Reason for return
+  exchangeDetails?: ExchangeDetails;
    
 
 }
 
 const courierSchema: Schema<Courier> = new Schema({
-  orderId:{
-    type:mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
+  // orderId:{
+  //   type:mongoose.Schema.Types.ObjectId,
+  //   required: true,
+  // },
   senderDetails: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -67,7 +77,9 @@ const courierSchema: Schema<Courier> = new Schema({
     ref: 'DeliveryAgent',
   },
   departmentStatus: {
-    type: Object, //{depId:status}
+    // type: Object, //{depId:status}
+    type: String,
+    enum: ['accepted','out of delivery','dispatched','unsuccessful','delivered'],
     required: true, //accepted, out of delivery, dispatched, unsuccessful, delivered
   },
   status: {
@@ -77,12 +89,28 @@ const courierSchema: Schema<Courier> = new Schema({
   },
   location: {
       type:String,
-      required: true,
+      // required: true,
   },
   quantity :{
       type:Number,
       required: false,
   },
+  trackingHistory: [
+      {
+        timestamp: {
+          type: Date,
+          // required: true,
+        },
+        location: {
+          type: String,
+          // required: true,
+        },
+        status: {
+          type: String,
+          // required: true,
+        },
+      },
+    ],
   pickupDate: {
     type: Date,
     required: false,
@@ -100,7 +128,7 @@ const courierSchema: Schema<Courier> = new Schema({
     required: false,
   },
   exchangeDetails: {
-    type: Object, // Or specify the ExchangeDetails interface here
+    type: Object, 
     required: false,
   },
   updatedAt: {
