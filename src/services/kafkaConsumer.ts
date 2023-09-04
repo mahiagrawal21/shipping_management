@@ -1,5 +1,6 @@
 import { Kafka, Consumer, EachMessagePayload } from 'kafkajs';
 import { handleOrderEvent } from '../controller/orderController'; // Import the handleOrderEvent function
+import { CourierModel } from '../models/courierModel';
 
 const kafka = new Kafka({
   clientId: 'courier-management-consumer',
@@ -31,5 +32,22 @@ export async function runOrderEventsConsumer() {
       // Implement your courier management logic here based on the received event
       // For example, you might update the order status in your database or trigger other actions.
     
+  });
+}
+
+export async function updateShipmentStatus() {
+  await consumer.connect();
+  await consumer.subscribe({ topic: 'order-events',fromBeginning: true });
+
+  await consumer.run({
+    eachMessage: async ({ message }) => {
+      const { key, value } = message;
+      const { status, location } = JSON.parse(value.toString());
+  
+      // Update the shipment status and location in the database as needed
+      await CourierModel.updateOne({ orderId: key }, { status, location });
+  
+      console.log(`Received tracking update for order ${key}: Status: ${status}, Location: ${location}`);
+    },
   });
 }

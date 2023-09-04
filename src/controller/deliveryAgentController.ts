@@ -13,8 +13,10 @@ import  bcrypt from 'bcrypt';
 
 // Define validation schemas
 const signupSchema = Joi.object({
+  name: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
+  
 });
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -29,6 +31,9 @@ const markDeliveredSchema = Joi.object({
   _id: Joi.string().required(),
 });
 
+const deleteEntrySchema = Joi.object({
+  _id: Joi.string().required(),
+});
 
 //Signup- we're using the bcryptjs library to hash the password before storing it in the database. 
 //The signup process involves checking if an account with the provided email already exists, and if not, it creates a new DeliveryAgent instance,
@@ -41,8 +46,9 @@ export async function signupDeliveryAgent(req, res) {
     return res.status(400).json({ error: error.details[0].message });
   }
 
- const email = req.body.email
-  const password = req.body.password
+ const {name,email,password} = req.body
+//  const email = req.body.email
+//   const password = req.body.password
 
   try {
     const existingDeliveryAgent = await DeliveryAgentModel.findOne({ email });
@@ -60,13 +66,14 @@ export async function signupDeliveryAgent(req, res) {
   const newDeliveryAgent = new DeliveryAgentModel({
     email,
     password: hashedPassword,
+    name
     // Other delivery agent data can be added here
   });
 
   const savedDeliveryAgent = await newDeliveryAgent.save();
 
-  const loggedInDeliveryAgent = { _id: savedDeliveryAgent._id };
-  const accessToken = jwt.sign(loggedInDeliveryAgent, process.env.SECRET_KEY3);
+  // const loggedInDeliveryAgent = { _id: savedDeliveryAgent._id };
+  // const accessToken = jwt.sign(loggedInDeliveryAgent, process.env.SECRET_KEY3);
   
   const responseData = {
     deliveryAgent: {
@@ -74,12 +81,12 @@ export async function signupDeliveryAgent(req, res) {
       email: savedDeliveryAgent.email,
       // Other delivery agent data can be included here
     },
-    accessToken,
+    // accessToken,
   };
  
   return res.status(201).json({
     status: 'success',
-    message: 'Signup and Login Success',
+    message: 'Signup success',
     data: responseData,
   });
 } catch (error) {
@@ -99,13 +106,16 @@ export async function loginDeliveryAgent(req, res) {
   if (error) {
     return res.status(400).json({ error: error.details[0].message });
   }
-  const email = req.body.email
-  const password = req.body.password
+  const {email,password }= req.body
+  // const password = req.body.password
 
   try {
     const deliveryAgent = await DeliveryAgentModel.findOne({
       email: email,
-    })
+      // password:password
+    }) 
+    console.log(deliveryAgent)
+
 
     if (!deliveryAgent) {
       return res.status(404).json({
@@ -127,11 +137,13 @@ export async function loginDeliveryAgent(req, res) {
         data: { deliveryAgent: delAgent, accessToken },
       })
     } else {
+      console.log(password);
       return res.status(401).json({
         status: 'failure',
         message: 'Incorrect Password',
         data: {},
       })
+      
     }
   } catch (error) {
     return res.status(500).json({ message: error.message }) // 400 => invalid user inputs
@@ -197,6 +209,10 @@ export async function addEntryDeliveryAgent(req, res) {
 @ access: private
 */
 export async function markDeliveredByDeliveryAgent(req, res) {
+  const { error } = markDeliveredSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   try {
     const deliveryAgentId = req.deliveryAgent._id
     const courierId = req.body._id
@@ -238,5 +254,44 @@ export async function markDeliveredByDeliveryAgent(req, res) {
     })
   } catch (error) {
     return res.status(500).json({ message: 'Something went wrong !' })
+  }
+}
+
+/*
+@ method: delete
+@ desc: delete a delivery agent
+@ access: private (assuming you have middleware that authenticates the admin)
+*/
+export async function deleteDeliveryAgent(req, res) {
+  // const { error } = deleteEntrySchema.validate(req.body);
+  // if (error) {
+  //   return res.status(400).json({ error: error.details[0].message });
+  // }
+  try {
+    const { deliveryAgentId } = req.params;
+    console.log(deliveryAgentId)
+
+    // Check if the delivery agent exists
+    const deliveryAgent = await DeliveryAgentModel.findById(deliveryAgentId);
+    if (!deliveryAgent) {
+      return res.status(404).json({
+        status: 'failure',
+        message: 'Delivery agent not found',
+        data: {},
+      });
+    }
+
+    // Delete the delivery agent from the database
+    await DeliveryAgentModel.findByIdAndDelete(deliveryAgentId);
+
+    // You can also perform additional cleanup, such as revoking their sessions from Redis
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Delivery agent deleted',
+      data: {},
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Something went wrong!' });
   }
 }

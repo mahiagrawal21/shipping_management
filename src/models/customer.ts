@@ -11,6 +11,7 @@ export interface CustomerDocument extends Document {
   country: string;
   email: string;
   password: string;
+  reviews: Array<string>;
   //comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -24,6 +25,8 @@ export const CustomerSchema: Schema<CustomerDocument> = new Schema({
   pincode: {type:String, required:false},
   country: {type: String, required:false},
   email: { type: String, required: true, unique: true },
+  reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
+
 });
 
 // // Hash the password before saving the user

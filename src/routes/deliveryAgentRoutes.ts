@@ -3,17 +3,22 @@ import {
   loginDeliveryAgent,
   addEntryDeliveryAgent,
   markDeliveredByDeliveryAgent,
-  signupDeliveryAgent
+  signupDeliveryAgent,
+  deleteDeliveryAgent
 } from '../controller/deliveryAgentController'; // Adjust the path
 import { validateJoiSchema } from '../middlewares/joivalidation';
 import Joi from 'joi';
+
+import {authorizeDeliveryAgentToken} from '../middlewares/generatetoken';
 
 const router = express.Router();
 
 
 const signupSchema = Joi.object({
+  name: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
+  
 });
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -28,6 +33,10 @@ const markDeliveredSchema = Joi.object({
     _id: Joi.string().required(),
 });
 
+const deleteEntrySchema = Joi.object({
+  _id: Joi.string().required(),
+});
+
 //Route for delivery agent signup
 router.post('/signup',validateJoiSchema(signupSchema),signupDeliveryAgent);
 // Route for delivery agent login
@@ -39,6 +48,7 @@ router.post('/add-entry', validateJoiSchema(addEntrySchema),addEntryDeliveryAgen
 // Route to mark courier as delivered by delivery agent
 router.post('/mark-delivered', validateJoiSchema(markDeliveredSchema),markDeliveredByDeliveryAgent);
 
-// Add more routes and controller functions as needed
+// Route to delete delivery agent
+router.delete('/delete/:deliveryAgentId',authorizeDeliveryAgentToken, deleteDeliveryAgent);
 
 export default router;

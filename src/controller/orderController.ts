@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { sendOrderShippedEvent } from '../services/kafkaProducer';
 import { runOrderEventsConsumer } from '../services/kafkaConsumer';
 import { CourierModel } from '../models/courierModel';
+import { producer} from '../services/kafkaProducer';
+
 // Handler for placing an order
 // export const placeOrder = async (req: Request, res: Response) => {
 //   try {
@@ -57,6 +59,45 @@ export const shipOrder = async (req: Request, res: Response) => {
 
 // Other order-related handlers can be defined here
 // For example, handlers for updating orders, canceling orders, etc.
+export const updateShipmentStatus = async (req: Request, res: Response) => {
+  try {
+    const { orderId } = req.params;
+    const { status, location } = req.body;
+
+    // Update the shipment status and location in the database
+    await CourierModel.updateOne({ orderId }, { status, location });
+
+    // Produce a Kafka message with the tracking update
+    await producer.send({
+      topic:  'order-events',
+      messages: [
+        {
+          key: orderId,
+          value: JSON.stringify({ status, location }),
+        },
+      ],
+    });
+
+    return res.json({ message: 'Tracking update sent successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //CONSUMER-

@@ -11,6 +11,7 @@ import kafka from './config/kafkaConfig';
 import orderRoutes from './routes/orderRoutes';
 import departmentRoutes from './routes/departmentRoutes';
 import adminRoutes from './routes/adminRoutes';
+import reviewRoutes from './routes/reviewRoutes';
 import viewrouter from './routes/view.routes';
 import path from "path"
 import bodyParser from 'body-parser';
@@ -25,10 +26,11 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/couriers', courierRoutes);
 app.use('/delivery-agents', deliveryAgentRoutes);
-app.use('/customer',customerRoutes);
+app.use('/customer',customerRoutes,reviewRoutes);
 app.use('/department',departmentRoutes);
 app.use('/orders',orderRoutes);
 app.use('/admin',adminRoutes);
+app.use('/review',reviewRoutes);
 app.use('/', viewrouter);
 
 app.use('/', express.static(path.join(__dirname, '..', 'views'), {  index: false,}));

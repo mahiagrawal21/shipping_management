@@ -9,6 +9,7 @@ interface ExchangeDetails {
 }
 
 interface Courier extends Document {
+  orderId:Types.ObjectId;
   senderDetails: Types.ObjectId;
   receiverDetails: Types.ObjectId;
   packageName: string;
@@ -18,6 +19,7 @@ interface Courier extends Document {
   deliveryAgent?: Types.ObjectId;
   departmentStatus: { [key: string]: string };
   status: 'pending' | 'shipped' | 'delivered';
+  location: string;
   quantity?: number;
   pickupDate?: Date;
   deliveredDate?: Date;
@@ -31,6 +33,10 @@ interface Courier extends Document {
 }
 
 const courierSchema: Schema<Courier> = new Schema({
+  orderId:{
+    type:mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
   senderDetails: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
@@ -68,6 +74,10 @@ const courierSchema: Schema<Courier> = new Schema({
     type: String,
     enum: ['pending','shipped','delivered'],
     required: true,
+  },
+  location: {
+      type:String,
+      required: true,
   },
   quantity :{
       type:Number,

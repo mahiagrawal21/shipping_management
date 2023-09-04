@@ -29,7 +29,27 @@ export class Verify {
 }
 
 
+// export const authenticateJWTForReview = (req: Request, res: Response, next: NextFunction) => {
+//     const token = req.header('Authorization');
   
+//     if (!token) {
+//       return res.status(401).json({ message: 'Unauthorized' });
+//     }
+  
+//     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+//       if (err) {
+//         return res.status(401).json({ message: 'Invalid token' });
+//       }
+  
+//       // Check if the user has the necessary permissions to create a review (e.g., is a customer)
+//       if (!decoded || !decoded.userId) {
+//         return res.status(403).json({ message: 'Forbidden' });
+//       }
+  
+//       req.user = decoded;
+//       next();
+//     });
+//   };
 
 
 
