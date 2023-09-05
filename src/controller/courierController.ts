@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'; // Assuming you're using Express
- import {CourierModel} from '../models/courierModel'; // Adjust the path
+ import {CourierModel, Courier} from '../models/courierModel'; // Adjust the path
 import { DepartmentModel } from '../models/departmentModel';
 import { generateRandomTrackerID } from '../utilities/trackerUtils';
 import { CustomerModel } from '../models/customer';
@@ -195,49 +195,32 @@ export const addCourierEntry = async (req: CustomerRequest, res: Response)=> {
 @ desc: get all couriers for a department
 @ access: private
 */
-/**
- * @swagger
- * /api/couriers:
- *   get:
- *     summary: Get a list of all couriers for a department
- *     description: Retrieve a list of all couriers associated with a department.
- *     responses:
- *       200:
- *         description: Successful response with a list of couriers.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Courier'
- *       500:
- *         description: Internal server error.
- */
-export const getAllCouriers= async(req, res) => {
-  try {
-    var departmentId = req.department._id
-    var allCouriers = await CourierModel.find()
-      .populate('senderDetails')
-      .populate('receiverDetails')
 
-    const resultingAllDepartmentCouriers = []
+// export const getAllCouriers= async(req, res) => {
+//   try {
+//     var departmentId = req.department._id
+//     var allCouriers = await CourierModel.find()
+//       .populate('senderDetails')
+//       .populate('receiverDetails')
 
-    for (const courier of allCouriers) {
-      if (Object.values(courier.tracker).includes(departmentId)) {
-        resultingAllDepartmentCouriers.push(courier)
-      }
-    }
+//     const resultingAllDepartmentCouriers = []
 
-    return res.status(200).json({
-      status: 'success',
-      message: 'Couriers Fetched Successful',
-      data: resultingAllDepartmentCouriers.reverse(),
-    })
-  } catch (error) {
-    console.log(error.message)
-    return res.status(500).json({ message: 'Something went wrong !' })
-  }
-}
+//     for (const courier of allCouriers) {
+//       if (Object.values(courier.tracker).includes(departmentId)) {
+//         resultingAllDepartmentCouriers.push(courier)
+//       }
+//     }
+
+//     return res.status(200).json({
+//       status: 'success',
+//       message: 'Couriers Fetched Successful',
+//       data: resultingAllDepartmentCouriers.reverse(),
+//     })
+//   } catch (error) {
+//     console.log(error.message)
+//     return res.status(500).json({ message: 'Something went wrong !' })
+//   }
+// }
 
 
 
@@ -315,25 +298,40 @@ export const getCouriersForDepartment = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Could not fetch couriers for the department' });
     }
   };
+  /**
+ * @swagger
+ * /api/couriers:
+ *   get:
+ *     summary: Get a list of all couriers for a department
+ *     description: Retrieve a list of all couriers associated with a department.
+ *     responses:
+ *       200:
+ *         description: Successful response with a list of couriers.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Courier'
+ *       500:
+ *         description: Internal server error.
+ */
+  //Get all couriers
+  export const getAllCouriers = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const allCouriers: Courier[] = await CourierModel.find();
+      res.status(200).json({
+        status: 'success',
+        message: 'Couriers Fetched Successfully',
+        data: allCouriers,
+      });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: 'Something went wrong!' });
+    }
+  };
 
-  
-  // Get courier tracking by ID
-  // export const getCourierTrackingById = async (req: Request, res: Response) => {
-  //   try {
-  //     const courierId = req.params.courierId;
-  //     const courier = await CourierModel.findById(courierId);
-  
-  //     if (!courier) {
-  //       return res.status(404).json({ error: 'Courier not found' });
-  //     }
-  
-  //     const { tracker } = courier;
-  //     res.json(tracker);
-  //   } catch (error) {
-  //     res.status(500).json({ error: 'Could not fetch courier tracking by ID' });
-  //   }
-  // };
-  
+
   // Update courier details
   export const updateCourierDetails = async (req: Request, res: Response) => {
     try {

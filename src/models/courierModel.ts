@@ -15,7 +15,7 @@ export interface TrackingUpdate {
 }
 
 
-interface Courier extends Document {
+export interface Courier extends Document {
   // orderId:Types.ObjectId;
   senderDetails: Types.ObjectId;
   receiverDetails: Types.ObjectId;

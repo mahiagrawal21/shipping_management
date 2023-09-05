@@ -1,6 +1,7 @@
 import express from 'express';
 import {
   createCourier,
+  getAllCouriers,
   updateCourierStatus,
   getCourierById,
   updatePickupAndDeliveryDates,
@@ -17,6 +18,10 @@ const router = express.Router();
 
 
 router.post('/create', createCourier);
+
+//Route for fetching all couriers
+router.get('/api/couriers', getAllCouriers);
+
 
 // Route to update courier status by ID
 router.put('/:courierId/status', updateCourierStatus);
