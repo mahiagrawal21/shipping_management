@@ -195,6 +195,24 @@ export const addCourierEntry = async (req: CustomerRequest, res: Response)=> {
 @ desc: get all couriers for a department
 @ access: private
 */
+/**
+ * @swagger
+ * /api/couriers:
+ *   get:
+ *     summary: Get a list of all couriers for a department
+ *     description: Retrieve a list of all couriers associated with a department.
+ *     responses:
+ *       200:
+ *         description: Successful response with a list of couriers.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Courier'
+ *       500:
+ *         description: Internal server error.
+ */
 export const getAllCouriers= async(req, res) => {
   try {
     var departmentId = req.department._id

@@ -57,8 +57,8 @@ export const shipOrder = async (req: Request, res: Response) => {
     }
   };
 
-// Other order-related handlers can be defined here
-// For example, handlers for updating orders, canceling orders, etc.
+
+// handlers for updating orders, canceling orders, etc.
 export const updateShipmentStatus = async (req: Request, res: Response) => {
   try {
     const { orderId } = req.params;
@@ -77,7 +77,7 @@ export const updateShipmentStatus = async (req: Request, res: Response) => {
         },
       ],
     });
-
+    
     return res.json({ message: 'Tracking update sent successfully' });
   } catch (error) {
     return res.status(500).json({ error: 'Internal Server Error' });

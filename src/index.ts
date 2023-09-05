@@ -12,16 +12,26 @@ import departmentRoutes from './routes/departmentRoutes';
 import adminRoutes from './routes/adminRoutes';
 import reviewRoutes from './routes/reviewRoutes';
 import viewrouter from './routes/view.routes';
-import path from "path"
+// import path from "path"
 import bodyParser from 'body-parser';
+import swaggerUi from 'swagger-ui-express'
+import * as path from 'path'
+import * as YAML from 'yamljs'
+
  
 const app = express();
-dotenv.config();
+dotenv.config();swaggerUi
 const port = 3000;
 app.use(express.json());
 connectToDatabase();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: false}));
+
+// const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));
+// app.use((swaggerDocument, '/api-docs'));
+
+const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));   
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/couriers', courierRoutes);
 app.use('/delivery-agents', deliveryAgentRoutes);

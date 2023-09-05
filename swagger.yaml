@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: Courier Management API
+  version: 1.0.0
+  description: API for managing couriers in a courier management system
+
+paths:
+  /api/couriers:
+    get:
+      summary: Get a list of all couriers for a department
+      description: Retrieve a list of all couriers in the system.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Courier'
+          '500':
+          description: Internal server error.  
+
+components:
+  schemas:
+    Courier:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the courier.
+        name:
+          type: string
+          description: Name of the courier.
+        status:
+          type: string
+          description: Status of the courier (e.g., "active," "inactive").
+      example:
+        id: 1
+        name: John Doe
+        status: active
