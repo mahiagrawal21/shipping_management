@@ -18,7 +18,7 @@ export async function runOrderEventsConsumer() {
       const orderEvent = JSON.parse(payload.message.value.toString());
       console.log('Received order event:', orderEvent);
       
-       // Call the handleOrderEvent function to process the received event
+       // handleOrderEvent function to process the received event
        await handleOrderEvent(orderEvent);
 
 

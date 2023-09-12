@@ -16,7 +16,8 @@ import viewrouter from './routes/view.routes';
 import bodyParser from 'body-parser';
 import swaggerUi from 'swagger-ui-express'
 import * as path from 'path'
-import * as YAML from 'yamljs'
+import swaggerDocument from './swagger_output.json';
+
 
  
 const app = express();
@@ -27,11 +28,10 @@ connectToDatabase();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: false}));
 
-// const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));
-// app.use((swaggerDocument, '/api-docs'));
 
-const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));   
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// const swaggerDocument = YAML.load(path.join(__dirname, '../swagger.yaml'));   
+ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use('/couriers', courierRoutes);
 app.use('/delivery-agents', deliveryAgentRoutes);

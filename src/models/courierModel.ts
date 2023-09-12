@@ -30,6 +30,7 @@ export interface Courier extends Document {
   location?: string;
   trackingHistory?: TrackingUpdate[];
   quantity?: number;
+  awbNumber?: string;
   pickupDate?: Date;
   deliveredDate?: Date;
   updatedAt: Date;
@@ -94,6 +95,11 @@ const courierSchema: Schema<Courier> = new Schema({
   quantity :{
       type:Number,
       required: false,
+  },
+  awbNumber: {
+    type: String,
+    unique: true,
+    
   },
   trackingHistory: [
       {

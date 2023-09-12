@@ -6,7 +6,18 @@
       "target": "es6",
       "moduleResolution": "node",
       "sourceMap": true,
-      "outDir": "dist"
+      "outDir": "dist",
+      "rootDir": "src",
+      "resolveJsonModule": true,
+      "declaration": true,
+      "forceConsistentCasingInFileNames": true,
+      "strict": false,
+      "skipLibCheck": true
+
     },
-    "lib": ["es2015"]
+    "lib": ["es2015"],
+    "include": [
+      "src/**/*.ts",
+      "path/to/swagger_output.json" // Add this line
+    ]
   }

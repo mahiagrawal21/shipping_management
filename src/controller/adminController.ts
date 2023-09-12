@@ -12,7 +12,7 @@ import { Sessions } from "./sessionController";
 import { CourierModel } from '../models/courierModel';
 import { TrackingUpdate } from '../models/courierModel';
 import { ObjectId } from 'mongoose';
-
+import Joi from 'joi';
 
 
 dotenv.config();
@@ -26,15 +26,41 @@ const client  = createClient();
 //   (redisClient as any).connect();
 
 
+export const signupSchema = Joi.object({
+  username: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  
+});
+
+export const loginSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
+
+
+
+
+
+
+
+
+
+
+
 const saltRounds = 10;
 
 export class AdminController {
   static async  createAdmin(req: Request, res: Response) {
+    const { error } = signupSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
     try {
       console.log(req.body);
       const { username, email, password } = req.body;
   
-      const adminExists = await AdminModel.findOne({ username });
+      const adminExists = await AdminModel.findOne({ email });
         if (adminExists) {
           return res.status(400).json({ error: 'Admin already exists' });
         }
@@ -44,6 +70,7 @@ export class AdminController {
         username,
         email,
         password: hashedPassword,
+        
       });
   
       const admin = await newAdmin.save();
@@ -57,6 +84,11 @@ export class AdminController {
 
 
 static async  loginAdmin(req: Request, res: Response) {
+
+  const { error } = loginSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   //const { email, password } = req.body;
   const details = req.body;
   console.log(details)
@@ -154,7 +186,7 @@ export const trackOrder = async (req: Request, res: Response) => {
     
     await order.save();
     // const trackingHistory = order.trackingHistory;
-
+    
     return res.status(200).json({ message: 'Order tracking information', data: order });
   } catch (error) {
     console.log(error)

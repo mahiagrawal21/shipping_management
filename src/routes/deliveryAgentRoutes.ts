@@ -7,35 +7,42 @@ import {
   deleteDeliveryAgent
 } from '../controller/deliveryAgentController'; 
 import { validateJoiSchema } from '../middlewares/joivalidation';
-import Joi from 'joi';
+import {
+  signupSchema,
+  loginSchema,
+  addEntrySchema ,
+  markDeliveredSchema,
+  
+} from '../controller/deliveryAgentController';
+// import Joi from 'joi';
 
 import {authorizeDeliveryAgentToken} from '../middlewares/generatetoken';
 
 const router = express.Router();
 
 
-const signupSchema = Joi.object({
-  name: Joi.string().required(),
-  email: Joi.string().email().required(),
-  password: Joi.string().required(),
+// const signupSchema = Joi.object({
+//   name: Joi.string().required(),
+//   email: Joi.string().email().required(),
+//   password: Joi.string().required(),
   
-});
-const loginSchema = Joi.object({
-  email: Joi.string().email().required(),
-  password: Joi.string().required(),
-});
+// });
+// const loginSchema = Joi.object({
+//   email: Joi.string().email().required(),
+//   password: Joi.string().required(),
+// });
 
-const addEntrySchema = Joi.object({
-  _id: Joi.string().required(),
-});
+// const addEntrySchema = Joi.object({
+//   _id: Joi.string().required(),
+// });
 
-const markDeliveredSchema = Joi.object({
-    _id: Joi.string().required(),
-});
+// const markDeliveredSchema = Joi.object({
+//     _id: Joi.string().required(),
+// });
 
-const deleteEntrySchema = Joi.object({
-  _id: Joi.string().required(),
-});
+// const deleteEntrySchema = Joi.object({
+//   _id: Joi.string().required(),
+// });
 
 //Route for delivery agent signup
 router.post('/signup',validateJoiSchema(signupSchema),signupDeliveryAgent);

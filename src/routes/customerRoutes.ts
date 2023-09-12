@@ -28,3 +28,5 @@ router.post('/reset-password', forgotPassword.reset_password);
 router.post('/verify-and-register-user',verifyAndRegisterUser)
 
 export default router;
+
+

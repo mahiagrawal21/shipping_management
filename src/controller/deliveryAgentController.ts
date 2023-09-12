@@ -12,26 +12,26 @@ import  bcrypt from 'bcrypt';
 
 
 // Define validation schemas
-const signupSchema = Joi.object({
+export const signupSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
   
 });
-const loginSchema = Joi.object({
+export const loginSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
 });
 
-const addEntrySchema = Joi.object({
+export const addEntrySchema = Joi.object({
   _id: Joi.string().required(),
 });
 
-const markDeliveredSchema = Joi.object({
+export const markDeliveredSchema = Joi.object({
   _id: Joi.string().required(),
 });
 
-const deleteEntrySchema = Joi.object({
+export const deleteEntrySchema = Joi.object({
   _id: Joi.string().required(),
 });
 
@@ -263,10 +263,10 @@ export async function markDeliveredByDeliveryAgent(req, res) {
 @ access: private (assuming you have middleware that authenticates the admin)
 */
 export async function deleteDeliveryAgent(req, res) {
-  // const { error } = deleteEntrySchema.validate(req.body);
-  // if (error) {
-  //   return res.status(400).json({ error: error.details[0].message });
-  // }
+  const { error } = deleteEntrySchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   try {
     const { deliveryAgentId } = req.params;
     console.log(deliveryAgentId)

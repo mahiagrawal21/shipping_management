@@ -1,10 +1,11 @@
 import { Request, Response } from 'express'; // Assuming you're using Express
- import {CourierModel, Courier} from '../models/courierModel'; // Adjust the path
+ import {CourierModel, Courier, TrackingUpdate} from '../models/courierModel'; // Adjust the path
 import { DepartmentModel } from '../models/departmentModel';
 import { generateRandomTrackerID } from '../utilities/trackerUtils';
 import { CustomerModel } from '../models/customer';
 import { sendEmail } from '../utilities/send_email_helper';
 import { URL } from "url";
+import { generateAwbNumber } from '../utilities/awbGenerator';
 
 interface CustomerRequest extends Request {
   department: {
@@ -32,7 +33,8 @@ export const createCourier = async (req: Request, res: Response) => {
       tracker:trackerID
     })
      const savedCourier = await newCourier.save();
-    console.log("new courier added");
+    console.log("new courier added ,Order placed successfully");
+    console.log(savedCourier);
     res.status(201).json(newCourier);
    
   } catch (error) {
@@ -49,7 +51,7 @@ export const createCourier = async (req: Request, res: Response) => {
 export const addCourierEntry = async (req: CustomerRequest, res: Response)=> {
   try {
     
-    const departmentId = req.department._id; // this is the id of loggedin department who is currently making the entry of this courier to their department (can be initiator as well as middle ones)
+    const departmentId = req.body.department._id; // this is the id of loggedin department who is currently making the entry of this courier to their department (can be initiator as well as middle ones)
     const department = await DepartmentModel.findById(departmentId).select('-password');
 
     const courierDetails = req.body.courierDetails;
@@ -73,7 +75,8 @@ export const addCourierEntry = async (req: CustomerRequest, res: Response)=> {
 
       const getDate = Date.now().toString()
       existingCourier.tracker[getDate] = departmentId
-      existingCourier.departmentStatus[departmentId] = 'Accepted'
+      
+      // existingCourier.departmentStatus[departmentId] = 'accepted'
       const courier = await CourierModel.findByIdAndUpdate(courierDetails._id, {
         tracker: existingCourier.tracker,
         status: midStatus,
@@ -230,19 +233,31 @@ export const addCourierEntry = async (req: CustomerRequest, res: Response)=> {
 export const updateCourierStatus = async (req: Request, res: Response) => {
   try {
     const courierId = req.params.courierId; // Assuming you pass courierId as a URL parameter
-    const { status } = req.body; 
+    const { status, location} = req.body; 
 
     const updatedCourier = await CourierModel.findByIdAndUpdate(
       courierId,
-      { status },
+      { status,location },
       { new: true }
     );
+    const newTrackingUpdate: TrackingUpdate = {
+      timestamp: new Date(),
+      location,
+      status,
+      save: function (): unknown {
+        throw new Error('Function not implemented.');
+      }
+    };
+    updatedCourier.trackingHistory.push(newTrackingUpdate);
+    await updatedCourier.save();
+
 
     if (!updatedCourier) {
       return res.status(404).json({ error: 'Courier not found' });
     }
 
     res.json(updatedCourier);
+    res.send('Order status updated successfully');
   } catch (error) {
     res.status(500).json({ error: 'Could not update courier status' });
   }
@@ -298,25 +313,7 @@ export const getCouriersForDepartment = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Could not fetch couriers for the department' });
     }
   };
-  /**
- * @swagger
- * /api/couriers:
- *   get:
- *     summary: Get a list of all couriers for a department
- *     description: Retrieve a list of all couriers associated with a department.
- *     responses:
- *       200:
- *         description: Successful response with a list of couriers.
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Courier'
- *       500:
- *         description: Internal server error.
- */
-  //Get all couriers
+  
   export const getAllCouriers = async (req: Request, res: Response): Promise<void> => {
     try {
       const allCouriers: Courier[] = await CourierModel.find();
@@ -353,10 +350,58 @@ export const getCouriersForDepartment = async (req: Request, res: Response) => {
       res.status(500).json({ error: 'Could not update courier details' });
     }
   };
-  
+ 
+  //Generate AWBNumber
+export const generateAwb = async (req:Request, res: Response) => {
+  const courierId = req.params.courierId as string;
+   console
+  try {
+    const courier = await CourierModel.findById(courierId);
+
+    if (!courier) {
+      return res.status(404).json({ message: 'Order/courier not found' });
+    }
+
+    if (courier.awbNumber) {
+      return res.status(400).json({ message: 'AWB number already generated' });
+    }
+
+    const awbNumber = generateAwbNumber();
+    courier.awbNumber = awbNumber;
+
+    console.log(awbNumber);
+    await courier.save();
+
+    res.json({ awbNumber });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+//Fetch courier details by awb
+export const getCourierByAwb = async (req:Request, res:Response)=> {
+  const awbNumber = req.params.awbNumber;
+  try {
+    const courier = await CourierModel.findOne({ awbNumber });
+
+    if (!courier) {
+      return res.status(404).json({ message: 'Courier not found' });
+    }
+
+    res.json(courier);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+
+
 
   
-
+// Returnorder
 export const  requestReturn = async (req: Request, res: Response) => {
   try {
     const { courierId, returnReason } = req.body;
@@ -373,6 +418,7 @@ console.log(courierId)
   }
 };
 
+//Exchange order
 export const requestExchange = async (req: Request, res: Response) => {
   try {
     const { courierId, exchangeDetails } = req.body;

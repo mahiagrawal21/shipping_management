@@ -42,4 +42,51 @@ export const getReviewsByCourier = async (req: Request, res: Response) => {
     }
   };
 
+
+
+  export const updateReview = async (req: Request, res: Response) => {
+    try {
+      const { reviewId } = req.params;
+      const { rating, feedback } = req.body;
+  
+      const updatedReview = await Review.findByIdAndUpdate(
+        reviewId,
+        { rating, feedback },
+        { new: true }
+      );
+  
+      if (!updatedReview) {
+        return res.status(404).json({ error: 'Review not found' });
+      }
+  
+      return res.status(200).json({
+        message: 'Review updated successfully',
+        data: updatedReview,
+      });
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+
+
+
+  export const deleteReview = async (req: Request, res: Response) => {
+    try {
+      const { reviewId } = req.params;
+  
+      const deletedReview = await Review.findByIdAndDelete(reviewId);
+  
+      if (!deletedReview) {
+        return res.status(404).json({ error: 'Review not found' });
+      }
+  
+      return res.status(200).json({
+        message: 'Review deleted successfully',
+        data: deletedReview,
+      });
+    } catch (error) {
+      return res.status(500).json({ error: 'Internal Server Error' });
+    }
+  }; 
   
