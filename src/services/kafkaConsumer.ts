@@ -26,7 +26,7 @@ export async function runOrderEventsConsumer() {
 
       try {
         const rawevent = JSON.parse(orderEvent);
-        console.log('Received order event:', rawevent);
+        console.log('Received order event:', rawevent); 
       } catch (error) {
         console.error('Error parsing JSON:', error);
       }

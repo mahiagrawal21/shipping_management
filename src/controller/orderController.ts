@@ -86,7 +86,7 @@ export const updateShipmentStatus = async (req: Request, res: Response) => {
 
 
 
-
+//.......................................................................................................................................
 
 //CONSUMER-
 export const startOrderEventsConsumer = async (req: Request, res: Response) => {
@@ -123,7 +123,7 @@ export const handleOrderEvent = async (orderEvent: any) => {
   }
 };
 
-
+//.........................................................................................................................
 
 //consumer controller file for above updateShipmentStatus producer controller
 export async function  processTrackingUpdate(orderId, status, location) {

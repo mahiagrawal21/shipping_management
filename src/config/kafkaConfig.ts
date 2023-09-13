@@ -16,4 +16,5 @@ const kafka = new Kafka({
 
 // export const trackingTopic = 'shipment-tracking';
 
+ 
  export default kafka;

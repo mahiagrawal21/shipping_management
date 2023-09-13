@@ -12,8 +12,9 @@ export const producer = kafka.producer({
 
 export async function sendOrderShippedEvent(orderId: string) {
  try{
-       
+     console.log('Connecting Producer')  
     await producer.connect();
+    console.log('Producer connected successfully')
 
     const orderEvent = {
       order_id: orderId,
