@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { sendOrderShippedEvent } from '../services/kafkaProducer';
-import { runOrderEventsConsumer } from '../services/kafkaConsumer';
+import { runOrderEventsConsumer, updateShipmentStatuss } from '../services/kafkaConsumer';
 import { CourierModel } from '../models/courierModel';
 import { producer} from '../services/kafkaProducer';
 
@@ -65,7 +65,7 @@ export const updateShipmentStatus = async (req: Request, res: Response) => {
     const { status, location } = req.body;
 
     // Update the shipment status and location in the database
-    await CourierModel.updateOne({ orderId }, { status, location });
+    await CourierModel.updateOne( { status, location });
 
     // Produce a Kafka message with the tracking update
     await producer.send({
@@ -122,3 +122,17 @@ export const handleOrderEvent = async (orderEvent: any) => {
     console.error('Error handling order event:', error);
   }
 };
+
+
+
+//consumer controller file for above updateShipmentStatus producer controller
+export async function  processTrackingUpdate(orderId, status, location) {
+  try {
+    await updateShipmentStatuss();
+    // Update the shipment status and location in the database
+    await CourierModel.updateOne({ orderId }, { status, location });
+    console.log(`Updated tracking information for order ${orderId}: Status - ${status}, Location - ${location}`);
+  } catch (error) {
+    console.error(`Error processing tracking update for order ${orderId}:`, error);
+  }
+}

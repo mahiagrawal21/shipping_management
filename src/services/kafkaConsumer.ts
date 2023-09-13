@@ -1,6 +1,8 @@
 import { Kafka, Consumer, EachMessagePayload } from 'kafkajs';
 import { handleOrderEvent } from '../controller/orderController'; 
 import { CourierModel } from '../models/courierModel';
+import {processTrackingUpdate} from '../controller/orderController';
+
 
 const kafka = new Kafka({
   clientId: 'courier-management-consumer',
@@ -34,17 +36,17 @@ export async function runOrderEventsConsumer() {
   });
 }
 
-export async function updateShipmentStatus() {
+export async function updateShipmentStatuss() {
   await consumer.connect();
   await consumer.subscribe({ topic: 'order-events',fromBeginning: true });
 
   await consumer.run({
     eachMessage: async ({ message }) => {
       const { key, value } = message;
-      const { status, location } = JSON.parse(value.toString());
+      const { status, location ,orderId} = JSON.parse(value.toString());
   
-      
-      await CourierModel.updateOne({ orderId: key }, { status, location });
+      await processTrackingUpdate(orderId,status,location);
+      // await CourierModel.updateOne({ orderId: key }, { status, location });
   
       console.log(`Received tracking update for order ${key}: Status: ${status}, Location: ${location}`);
     },

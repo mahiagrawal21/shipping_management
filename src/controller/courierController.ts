@@ -6,6 +6,7 @@ import { CustomerModel } from '../models/customer';
 import { sendEmail } from '../utilities/send_email_helper';
 import { URL } from "url";
 import { generateAwbNumber } from '../utilities/awbGenerator';
+import Joi from 'joi';
 
 interface CustomerRequest extends Request {
   department: {
@@ -13,9 +14,25 @@ interface CustomerRequest extends Request {
   };
 }
 
+export const createCourierSchema = Joi.object({
+  senderDetails: Joi.string().alphanum().length(24).required(), 
+  receiverDetails: Joi.string().alphanum().length(24).required(),
+  departmentStatus: Joi.string().valid('accepted', 'out of delivery', 'dispatched', 'unsuccessful', 'delivered').required(),
+  packageName: Joi.string().required(),
+  packageWeight: Joi.string().required(),
+  status: Joi.string().valid('pending', 'shipped', 'delivered').required(),
+});
 
+export const updateCourierStatusSchema = Joi.object({
+  status: Joi.string().valid('pending', 'shipped', 'delivered').required(),
+  location: Joi.string().required(),
+});
 
 export const createCourier = async (req: Request, res: Response) => {
+    const { error } = createCourierSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   try {
     //const trackerID = '1234'
      const trackerID = generateRandomTrackerID(8);
@@ -193,44 +210,12 @@ export const addCourierEntry = async (req: CustomerRequest, res: Response)=> {
 }
 
 
-/*
-@ method: get
-@ desc: get all couriers for a department
-@ access: private
-*/
-
-// export const getAllCouriers= async(req, res) => {
-//   try {
-//     var departmentId = req.department._id
-//     var allCouriers = await CourierModel.find()
-//       .populate('senderDetails')
-//       .populate('receiverDetails')
-
-//     const resultingAllDepartmentCouriers = []
-
-//     for (const courier of allCouriers) {
-//       if (Object.values(courier.tracker).includes(departmentId)) {
-//         resultingAllDepartmentCouriers.push(courier)
-//       }
-//     }
-
-//     return res.status(200).json({
-//       status: 'success',
-//       message: 'Couriers Fetched Successful',
-//       data: resultingAllDepartmentCouriers.reverse(),
-//     })
-//   } catch (error) {
-//     console.log(error.message)
-//     return res.status(500).json({ message: 'Something went wrong !' })
-//   }
-// }
-
-
-
-
-
 //Update courier entry :
 export const updateCourierStatus = async (req: Request, res: Response) => {
+  const { error } = updateCourierStatusSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   try {
     const courierId = req.params.courierId; // Assuming you pass courierId as a URL parameter
     const { status, location} = req.body; 

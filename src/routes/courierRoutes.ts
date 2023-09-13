@@ -13,12 +13,20 @@ import {
   requestReturn,
   requestExchange,
 } from '../controller/courierController'; 
+
+import {
+  createCourierSchema,
+  updateCourierStatusSchema,
+
+} from '../controller/courierController';
 import {authorizeToken} from '../middlewares/generatetoken';
+import { validateJoiSchema } from '../middlewares/joivalidation';
+
 
 const router = express.Router();
 
 
-router.post('/create', createCourier);
+router.post('/create', validateJoiSchema(createCourierSchema),createCourier);
 
 //Route for fetching all couriers
 router.get('/api/couriers', getAllCouriers);
@@ -27,7 +35,7 @@ router.post('/addCourier', authorizeToken, addCourierEntry);
 
 
 // Route to update courier status by ID
-router.put('/:courierId/status', updateCourierStatus);
+router.put('/:courierId/status', validateJoiSchema(updateCourierStatusSchema),updateCourierStatus);
 
 // Route to get courier details by ID
 router.get('/:courierId', getCourierById);
